@@ -14,4 +14,11 @@
     }
     
 
-    var_dump($_GET);
+    //Check for config file
+    if(!file_exists("{$_CWD}/deploy.config.php")){
+        Console::log("deploy.config.php not found in {$_CWD}");
+        die;
+    }
+    $_config = include("{$_CWD}/deploy.config.php");
+
+    var_dump($_config);
