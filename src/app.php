@@ -31,12 +31,15 @@
         Console::log("Settings for {$branch} not found.");
         die;
     }
+    //Check if current branch matches working copy
     if($branch != Git::execute("symbolic-ref --short HEAD")){
         Console::log("Working copy does not match target branch. Checkout the correct branch, or try the --force option.");
         die;
     }
+
     //To do: add --force, -f option
 
+    //Grab current hash
     $current_hash = Git::execute("rev-parse --verify {$branch}");
     if($current_hash == "fatal: Needed a single revision"){
         //Note: This might not be necessary due to all the other checks
@@ -44,4 +47,17 @@
         die;
     }
 
-    var_dump($current_hash);
+    //Connect to Remote Server
+    $_cred = $_config[$branch];
+    $_connectionClass = "{$_cred['protocol']}Connection";
+    $deploy = new $_connectionClass();
+    $deploy->connect($_cred['server']);
+    if(!@$deploy->login($_cred['user'], $_cred['pass'])) {
+        Console::log("Login failed with {$_cred['user']}@{$_cred['server']} using password {$_cred['pass']}");
+        die;
+    }
+
+    //Set base directory
+    $deploy->chdir($_cred['path']);
+
+    Console::log("Connected!");
