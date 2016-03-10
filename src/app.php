@@ -12,7 +12,7 @@
             unset($_GET['options'][$k]);
         }
     }
-    
+
 
     //Check for config file
     if(!file_exists("{$_CWD}/deploy.config.php")){
@@ -21,4 +21,17 @@
     }
     $_config = include("{$_CWD}/deploy.config.php");
 
-    var_dump($_config);
+    
+    //Assign $branch from CL
+    if(!$branch = (!empty($_GET[0]))? $_GET[0] : null){
+        Console::log("Branch not specified."); die;
+    }
+    //Check if settings for branch exist
+    if(!isset($_config[$branch])){
+        Console::log("Settings for {$branch} not found.");
+        die;
+    }
+    if($branch != Git::execute("symbolic-ref --short HEAD")){
+        Console::log("Working copy does not match target branch. Checkout the correct branch, or try the --force option.");
+        die;
+    }
