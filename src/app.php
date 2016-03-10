@@ -35,3 +35,13 @@
         Console::log("Working copy does not match target branch. Checkout the correct branch, or try the --force option.");
         die;
     }
+    //To do: add --force, -f option
+
+    $current_hash = Git::execute("rev-parse --verify {$branch}");
+    if($current_hash == "fatal: Needed a single revision"){
+        //Note: This might not be necessary due to all the other checks
+        Console::log("Branch {$branch} not found in git repository.");
+        die;
+    }
+
+    var_dump($current_hash);
