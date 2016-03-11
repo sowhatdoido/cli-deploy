@@ -53,7 +53,7 @@ class SFTPConnection implements ConnectionInterface {
     }
     
     public function put($path, $file){
-        return $this->_conn->put($file, $content, SFTP::SOURCE_LOCAL_FILE);
+        return $this->_conn->put($file, $path, SFTP::SOURCE_LOCAL_FILE);
     }
     
     public function putString($content, $file){

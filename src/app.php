@@ -1,5 +1,5 @@
 <?php
-    require("../vendor/autoload.php");
+    require(__DIR__ . "/../vendor/autoload.php");
 
     $_CWD = getcwd(); //Get current working directory
 
@@ -12,7 +12,7 @@
             unset($_GET['options'][$k]);
         }
     }
-    
+
     //Check for config file
     if(!file_exists("{$_CWD}/deploy.config.php")){
         Console::log("deploy.config.php not found in {$_CWD}");
@@ -23,7 +23,8 @@
     
     //Assign $branch from CL
     if(!$branch = (!empty($_GET[0]))? $_GET[0] : null){
-        Console::log("Branch not specified."); die;
+        Console::log("Branch not specified."); 
+        die;
     }
     //Check if settings for branch exist
     if(!isset($_config[$branch])){
@@ -51,11 +52,12 @@
     $_connectionClass = "{$_cred['protocol']}Connection";
     $deploy = new $_connectionClass();
     $deploy->connect($_cred['server']);
+    Console::log("Connecting to {$_cred['server']}...");
     if(!@$deploy->login($_cred['user'], $_cred['pass'])) {
         Console::log("Login failed with {$_cred['user']}@{$_cred['server']} using password {$_cred['pass']}");
         die;
     }
-
+    Console::log("...connected!");
     //Set base directory
     $deploy->chdir($_cred['path']);
 
@@ -65,5 +67,37 @@
     //Calculate differences
     $diff = Git::executeToArray("diff --name-status {$remote_hash} {$current_hash}");
 
-    
+    if(Helper::hasOption($_GET, array("--dryrun", "-d"))){
+        Console::log("Dry Run! No actions will actually be taken!");
+    }
+
+    foreach($diff as $line){
+        //Grab File Info
+        $fileInfo = Git::parseGitDiff($line);
+
+        //Change directories to the appropriate one, making in the process
+        include("commands/chdir.php");
+
+        if($fileInfo['command'] === 'D'){
+            Console::log("- Deleting {$fileInfo['path']}");
+            include("commands/delete.php");
+        } else if($fileInfo['command'] == 'R'){
+            Console::log("% Renaming file {$fileInfo['path']}");
+            include("commands/add.php");
+            //For the time being, renaming a file uploads the newly named file.
+            //This should be changed to a move command.
+        } else {
+            Console::log("+ Adding file {$fileInfo['path']}");
+            include("commands/add.php");
+        }
+
+        //Reset to home path
+        $deploy->chdir($_cred['path']);
+    }
+
+    if(!Helper::hasOption($_GET, array("--dryrun", "-d"))){
+        $deploy->putString($current_hash, ".revisionhash"); 
+    }
+
+    Console::log("Deployed {$current_hash} to {$branch}");
     
