@@ -1,5 +1,5 @@
 <?php
-    require(__DIR__ . "/../vendor/autoload.php");
+    require(__DIR__ . "/vendor/autoload.php");
 
     $_CWD = getcwd(); //Get current working directory
 

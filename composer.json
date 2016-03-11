@@ -14,5 +14,8 @@
         "classmap": [
             "src/lib/"
         ]
+    },
+    "config": {
+        "vendor-dir": "src/vendor"
     }
 }
