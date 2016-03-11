@@ -60,4 +60,11 @@
     //Set base directory
     $deploy->chdir($_cred['path']);
 
-    Console::log("Connected!");
+    //Grab remote hash or set empty
+    $remote_hash = ($deploy->getString('.revisionhash'))?: "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
+
+    //Calculate differences
+    $diff = Git::executeToArray("diff --name-status {$remote_hash} {$current_hash}");
+
+    
+    
