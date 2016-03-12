@@ -64,7 +64,7 @@ class FTPConnection implements ConnectionInterface {
     }
     
     public function put($path, $file){
-        return ftp_put($this->_conn, $file, $content, FTP_BINARY);
+        return ftp_put($this->_conn, $file, $path, FTP_BINARY);
     }
     
     public function putString($content, $file){
