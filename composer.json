@@ -1,5 +1,5 @@
 {
-    "name": "sowhatdoido/cli-deploy",
+    "name": "sowhatdoido/pusheen",
     "description": "Deploy to remote server using command line interface via S/FTP protocols",
     "authors": [
         {
