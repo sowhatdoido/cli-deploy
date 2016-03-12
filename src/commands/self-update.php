@@ -10,10 +10,10 @@ try {
     if ($result) {
         $new = $updater->getNewVersion();
         $old = $updater->getOldVersion();
-        Console::log("Updated from {$old} to {$new}");
+        exit("Updated from {$old} to {$new}");
     } else {
-        Console::log("No update needed!");
+        exit("No update needed!");
     }
 } catch (\Exception $e) {
-    Console::log($e->getMessage());
+    exit($e->getMessage());
 }
