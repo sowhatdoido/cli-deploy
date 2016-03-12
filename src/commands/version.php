@@ -1,3 +1,3 @@
 <?php
 
-    Console::log("Pusheen v@package_version@ by Frank Tran(ftransd@gmail.com)");
+    Console::log("Pusheen @package_version@ by Frank Tran(ftransd@gmail.com)");
