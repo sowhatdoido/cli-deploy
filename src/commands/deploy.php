@@ -7,17 +7,19 @@
     }
     
     $_cfg_path = $_CWD;
-    if(Helper::hasOption($_GET, array("--config-path", "-cfp"))){ 
-        $_cfg_path .= "/" . (@($_GET['options']['--config-path'])?: $_GET['options']['-cfp']);
+    if(Helper::hasOption($_GET, array("--config-file", "-cf"))){ 
+        $_cfg_path .= "/" . (@($_GET['options']['--config-file'])?: $_GET['options']['-cf']);
+    } else {
+        $_cfg_path .= "/deploy.config.php";
     }
 
     //Check for config file
-    if(!file_exists("{$_cfg_path}/deploy.config.php")){
-        Console::log("deploy.config.php not found in {$_cfg_path}");
+    if(!file_exists("{$_cfg_path}")){
+        Console::log("Config not found in {$_cfg_path}");
         die;
     }
-    $_config = include("{$_cfg_path}/deploy.config.php");
-
+    $_config = include("{$_cfg_path}");
+    
     //Check if settings for branch exist
     if(!isset($_config[$branch])){
         Console::log("Settings for {$branch} not found.");
