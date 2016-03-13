@@ -6,11 +6,15 @@
         die;
     }
     
-    $_cfg_path = $_CWD;
+    $_cfg_path = "";
     if(Helper::hasOption($_GET, array("--config-file", "-cf"))){ 
-        $_cfg_path .= "/" . (@($_GET['options']['--config-file'])?: $_GET['options']['-cf']);
+        $_cfg_path = (@($_GET['options']['--config-file'])?: $_GET['options']['-cf']);
+
+        if(substr($_cfg_path, 0, 1) !== DIRECTORY_SEPARATOR){
+            $_cfg_path = "{$_CWD}/{$_cfg_path}";
+        } 
     } else {
-        $_cfg_path .= "/deploy.config.php";
+        $_cfg_path = "{$_CWD}/deploy.config.php";
     }
 
     //Check for config file
