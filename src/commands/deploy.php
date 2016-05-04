@@ -46,18 +46,18 @@
     }
 
     //Connect to Remote Server
-    $_cred = $_config[$branch];
-    $_connectionClass = "{$_cred['protocol']}Connection";
+    $_branchConf = $_config[$branch];
+    $_connectionClass = "{$_branchConf['protocol']}Connection";
     $deploy = new $_connectionClass();
-    $deploy->connect($_cred['server']);
-    Console::log("Connecting to {$_cred['server']}...");
-    if(!@$deploy->login($_cred['user'], $_cred['pass'])) {
-        Console::log("Login failed with {$_cred['user']}@{$_cred['server']} using password {$_cred['pass']}");
+    $deploy->connect($_branchConf['server']);
+    Console::log("Connecting to {$_branchConf['server']}...");
+    if(!@$deploy->login($_branchConf['user'], $_branchConf['pass'])) {
+        Console::log("Login failed with {$_branchConf['user']}@{$_branchConf['server']} using password {$_branchConf['pass']}");
         die;
     }
     Console::log("...connected!");
     //Set base directory
-    $deploy->chdir($_cred['path']);
+    $deploy->chdir($_branchConf['path']);
 
     //Grab remote hash or set empty
     $remote_hash = ($deploy->getString('.revisionhash'))?: "4b825dc642cb6eb9a060e54bf8d69288fbee4904";
@@ -90,11 +90,13 @@
         }
 
         //Reset to home path
-        $deploy->chdir($_cred['path']);
+        $deploy->chdir($_branchConf['path']);
     }
 
     if(!Helper::hasOption($_GET, array("--dryrun", "-d"))){
         $deploy->putString($current_hash, ".revisionhash"); 
     }
+
+    include("_post-deploy.php");
 
     Console::log("Deployed {$current_hash} to {$branch}");
