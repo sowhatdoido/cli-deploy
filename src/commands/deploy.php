@@ -31,7 +31,7 @@
     }
     //Check if current branch matches working copy
     if($branch != Git::execute("symbolic-ref --short HEAD")){
-        Console::log("Working copy does not match target branch. Checkout the correct branch, or try the --force option.");
+        Console::log("Working copy does not match target branch. Checkout the correct branch.");
         die;
     }
 

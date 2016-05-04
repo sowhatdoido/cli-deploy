@@ -12,10 +12,10 @@ try {
     if ($result) {
         $new = $updater->getNewVersion();
         $old = $updater->getOldVersion();
-        exit("Updated from {$old} to {$new}");
+        exit("Updated from {$old} to {$new}" . PHP_EOL);
     } else {
-        exit("No update needed!");
+        exit("No update needed!" . PHP_EOL);
     }
 } catch (\Exception $e) {
-    exit($e->getMessage());
+    exit($e->getMessage() . PHP_EOL);
 }
